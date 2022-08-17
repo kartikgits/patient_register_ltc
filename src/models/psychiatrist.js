@@ -44,7 +44,7 @@ Psychiatrist.getAllByHospitalId = (hospital_id, result) => {
             return;
         }
 
-        result({ kind: 'not_found' }, null);
+        result('not_found', null);
     }
     );
 }

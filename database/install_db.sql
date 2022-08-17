@@ -38,6 +38,7 @@ create table `patient_registration`.`patients` (
     `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`patient_id`),
+    index idx_patient_email (`patient_email`),
     KEY `fk_patient_psychiatrist_id` (`patient_psychiatrist_id`),
     CONSTRAINT `fk_patient_psychiatrist_id` FOREIGN KEY (`patient_psychiatrist_id`) REFERENCES `psychiatrists` (`psychiatrist_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

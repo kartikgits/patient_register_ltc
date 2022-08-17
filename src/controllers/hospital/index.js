@@ -6,9 +6,10 @@ exports.getHospitalDetailsById = (req, res) => {
     try {
         // Get hospital name by id
         hospital.getById(req.params.hospital_id, (err, hospital) => {
-            if (err) {
+            if (err && err.message) {
                 res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving hospital details."
+                    error: 'true',
+                    message: err || "Some error occurred while retrieving hospital details."
                 });
             } else {
                 if (!hospital) {
@@ -18,14 +19,18 @@ exports.getHospitalDetailsById = (req, res) => {
                 } else {
                     // Get all psychiatrists by hospital id
                     psychiatrist.getAllByHospitalId(req.params.hospital_id, (err, psychiatrists) => {
-                        if (err) {
+                        if (err && err.message) {
                             res.status(500).send({
                                 message: err.message || "Some error occurred while retrieving psychiatrist details."
                             });
                         } else {
+                            let psychiatristCount = 0;
                             if (!psychiatrists) {
-                                res.status(404).send({
-                                    message: "No psychiatrist found with id " + req.params.hospital_id
+                                res.json({
+                                    hospital_name: hospital.hospital_name,
+                                    total_psychiatrist_count: 0,
+                                    total_patient_count: 0,
+                                    psychiatrist_details: []
                                 });
                             } else {
                                 // Surf all psychiatrists and get all patients by psychiatrist id
@@ -39,7 +44,7 @@ exports.getHospitalDetailsById = (req, res) => {
                                         patient_details: []
                                     });
                                     patient.getAllByPsychiatristId(psychiatrists[i].psychiatrist_id, (err, patients) => {
-                                        if (err) {
+                                        if (err && err.message) {
                                             res.status(500).send({
                                                 message: err.message || "Some error occurred while retrieving patient details."
                                             });

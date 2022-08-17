@@ -21,7 +21,7 @@ Hospital.getById = (hospital_id, result) => {
             return;
         }
 
-        result({ kind: 'not_found' }, null);
+        result('Record Not Found', null);
     }
     );
 }
