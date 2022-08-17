@@ -47,4 +47,24 @@ Patient.findPatientByEmail = (email, result) => {
     );
 }
 
+// Get all patients by psychiatrist_id
+Patient.getAllByPsychiatristId = (psychiatrist_id, result) => {
+    databaseConnection.query('SELECT * FROM patients WHERE patient_psychiatrist_id = ?', psychiatrist_id, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log('Found patients: ', res);
+            result(null, res);
+            return;
+        }
+
+        result({ kind: 'not_found' }, null);
+    }
+    );
+}
+
 module.exports = Patient;
