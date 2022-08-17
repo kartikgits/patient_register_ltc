@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
     res.send('Welcome to LTC Patient Registration');
 });
 
+// Require the routes
+app.use('/api/psychiatrist', require('./src/routes/psychiatrist'));
+app.use('/api/hospital', require('./src/routes/hospital'));
+
 // Handling errors
 app.use((err, req, res, next) => {
     err.statusCode = err.statusCode || 500;

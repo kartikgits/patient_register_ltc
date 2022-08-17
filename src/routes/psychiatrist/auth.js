@@ -11,6 +11,6 @@ module.exports = (app) => {
     }
     );
 
-    app.post('/signup', [verifySignUp.checkDuplicatePsychiatristEmail], controller.signup);
-    app.post('/signin', controller.login);
+    app.post('/signup', [verifySignUp.checkDuplicatePsychiatristEmail], controller.auth.signup);
+    app.post('/signin', controller.auth.signin);
 };
