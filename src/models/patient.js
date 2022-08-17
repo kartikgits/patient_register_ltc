@@ -2,20 +2,6 @@
 
 let databaseConnection = require('../../config/db.config');
 
-// `patient_id` int(11) NOT NULL AUTO_INCREMENT,
-// `patient_name` varchar(255) NOT NULL,
-// `patient_address` varchar(255) NOT NULL,
-// `patient_phone` varchar(255) NOT NULL,
-// `patient_email` varchar(255) NOT NULL,
-// `patient_password` varchar(255) NOT NULL,
-// `patient_photo` varchar(255) NOT NULL,
-// `patient_psychiatrist_id` int(11) NOT NULL,
-// `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-// `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-// PRIMARY KEY (`patient_id`),
-// KEY `fk_patient_psychiatrist_id` (`patient_psychiatrist_id`),
-// CONSTRAINT `fk_patient_psychiatrist_id` FOREIGN KEY (`patient_psychiatrist_id`) REFERENCES `psychiatrists` (`psychiatrist_id`) ON DELETE CASCADE ON UPDATE CASCADE
-
 let Patient = function (patient) {
     this.patient_name = patient.patient_name;
     this.patient_address = patient.patient_address;
@@ -40,3 +26,25 @@ Patient.create = (newPatient, result) => {
     }
     );
 }
+
+// Find a patient by email
+Patient.findPatientByEmail = (email, result) => {
+    databaseConnection.query('SELECT * FROM patients WHERE patient_email = ?', email, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+        
+        if (res.length) {
+            console.log('Found patient: ', res[0]);
+            result(null, res[0]);
+            return;
+        }
+
+        result({ kind: 'not_found' }, null);
+    }
+    );
+}
+
+module.exports = Patient;
