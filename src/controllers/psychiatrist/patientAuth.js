@@ -7,7 +7,7 @@ signup = (req, res) => {
         const errors = validationResult(req); // Check for validation errors
         if (!errors.isEmpty()) {
             return res.status(422).json({
-                error: true,
+                status: false,
                 errors: errors.array()
             });
         }
@@ -22,6 +22,7 @@ signup = (req, res) => {
         }, (err, patient) => {
             if (err) {
                 res.status(500).send({
+                    status: false,
                     message: err.message || "Some error occurred while creating the patient."
                 });
             } else {
@@ -31,6 +32,7 @@ signup = (req, res) => {
         );
     } catch (err) {
         res.status(500).send({
+            status: false,
             message: err.message || "Some error occurred while creating the patient account."
         });
     }

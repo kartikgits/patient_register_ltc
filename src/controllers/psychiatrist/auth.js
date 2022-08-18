@@ -15,6 +15,7 @@ signup = (req, res) => {
         }, (err, psychiatrist) => {
             if (err) {
                 res.status(500).send({
+                    status: false,
                     message: err.message || "Some error occurred while creating the psychiatrist."
                 });
             } else {
@@ -24,6 +25,7 @@ signup = (req, res) => {
         );
     } catch (err) {
         res.status(500).send({
+            status: false,
             message: err.message || "Some error occurred while creating psychiatrist account."
         });
     }
@@ -34,6 +36,7 @@ signin = (req, res) => {
         psychiatrist.getByEmail(req.body.psychiatrist_email, (err, psychiatrist) => {
             if (err) {
                 res.status(500).send({
+                    status: false,
                     message: err.message || "Some error occurred while retrieving psychiatrist details."
                 });
             } else {
@@ -64,6 +67,7 @@ signin = (req, res) => {
         );
     } catch (err) {
         res.status(500).send({
+            status: false,
             message: err.message || "Some error occurred while signing in to psychiatrist account."
         });
     }
