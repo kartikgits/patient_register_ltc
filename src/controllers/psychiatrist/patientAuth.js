@@ -1,9 +1,17 @@
 const patient = require('../../models/patient');
-
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator/check');
 
 signup = (req, res) => {
     try {
+        const errors = validationResult(req); // Check for validation errors
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                error: true,
+                errors: errors.array()
+            });
+        }
+
         // Save patient to database
         patient.create({
             patient_name: req.body.patient_name,

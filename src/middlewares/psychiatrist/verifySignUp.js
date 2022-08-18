@@ -1,17 +1,31 @@
 const patient = require('../../models/patient');
 const psychiatrist = require('../../models/psychiatrist');
+const { body } = require('express-validator/check');
 
 // Check duplicate patient email
 const checkDuplicatePatientEmail = (req, res, next) => {
     try {
-        patient.getByEmail(req.body.patient_email, (err, patient) => {
-            if (err) {
-                res.status(500).send({
+        if(!req.body.patient_email) {
+            return res.status(409).send({
+                error: true,
+                message: "Patient email is required."
+            });
+        }
+
+        req.body.patient_email.match(
+            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        ) ? '': res.status(409).send({
+            error: true,
+            message: 'Email is not valid'
+        });
+        patient.findPatientByEmail(req.body.patient_email, (err, patient) => {
+            if (err && err.message) {
+                return res.status(500).send({
                     message: err.message || "Some error occurred while checking duplicate patient email."
                 });
             } else {
                 if (patient) {
-                    res.status(409).send({
+                    return res.status(409).send({
                         message: "Patient email already exists."
                     });
                 } else {
@@ -21,7 +35,7 @@ const checkDuplicatePatientEmail = (req, res, next) => {
         }
         );
     } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
             message: err.message || "Some error occurred while checking duplicate patient email."
         });
     }
@@ -53,7 +67,40 @@ const checkDuplicatePsychiatristEmail = (req, res, next) => {
     }
 }
 
+// Validate patient signup fields
+const validatePatientSignUp = (method) => {
+    switch (method) {
+        case 'signup': {
+            return [
+                body('patient_name', 'Patient name is required').notEmpty(),
+                body('patient_email', 'Patient email is not provided or invalid').exists().isEmail(),
+                body('patient_address', 'Patient address is required and should be for min 10 characters').isLength({ min: 10 }),
+                body('patient_phone', 'Patient phone provided is invalid').optional().isMobilePhone(),
+                body('patient_password', 'Patient password is required and should be of 8-16 characters').isLength({ min: 8, max: 16 }).custom((value, { req }) => {
+                    // Check if value contains at least one number and one uppercase and lowercase letter and optional special characters, otherwise, throw error
+                    const regex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
+                    if (!regex.test(value)) {
+                        throw new Error('Password must contain at least one number, one uppercase and one lowercase letter');
+                    } else {
+                        return value;
+                    }
+                }),
+                // body('patient_photo', 'Patient photo is required').exists().notEmpty().custom((value, { req }) => {
+                //     // Check if value is a valid image url, otherwise, throw error
+                //     let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+                //     if (!regex.test(value)) {
+                //         throw new Error('Patient photo is not a valid image url.');
+                //     } else {
+                //         return value;
+                //     }
+                // })
+            ];
+        }
+    }
+}
+
 module.exports = {
+    validatePatientSignUp: validatePatientSignUp,
     checkDuplicatePatientEmail: checkDuplicatePatientEmail,
     checkDuplicatePsychiatristEmail: checkDuplicatePsychiatristEmail
 }
