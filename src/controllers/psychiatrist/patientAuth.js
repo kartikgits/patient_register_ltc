@@ -1,6 +1,7 @@
 const patient = require('../../models/patient');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator/check');
+const { getUrlFromImage } = require('../../utils/inputModifiers');
 
 signup = (req, res) => {
     try {
@@ -18,7 +19,8 @@ signup = (req, res) => {
             patient_address: req.body.patient_address,
             patient_phone: req.body.patient_phone,
             patient_email: req.body.patient_email,
-            patient_password: bcrypt.hashSync(req.body.patient_password, 8)
+            patient_password: bcrypt.hashSync(req.body.patient_password, 8),
+            patient_photo: getUrlFromImage(req.body.patient_photo),
         }, (err, patient) => {
             if (err) {
                 res.status(500).send({

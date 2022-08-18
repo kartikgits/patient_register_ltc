@@ -2,6 +2,7 @@ const patient = require('../../models/patient');
 const psychiatrist = require('../../models/psychiatrist');
 const { body } = require('express-validator/check');
 
+
 // Check duplicate patient email
 const checkDuplicatePatientEmail = (req, res, next) => {
     try {
@@ -102,16 +103,7 @@ const validatePatientSignUp = (method) => {
                     } else {
                         return value;
                     }
-                }),
-                // body('patient_photo', 'Patient photo is required').exists().notEmpty().custom((value, { req }) => {
-                //     // Check if value is a valid image url, otherwise, throw error
-                //     let regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-                //     if (!regex.test(value)) {
-                //         throw new Error('Patient photo is not a valid image url.');
-                //     } else {
-                //         return value;
-                //     }
-                // })
+                })
             ];
         }
     }
