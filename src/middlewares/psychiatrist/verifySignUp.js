@@ -22,6 +22,12 @@ const checkDuplicatePatientEmailAndPsychiatristId = (req, res, next) => {
         });
 
         // Check if psychiatrist id exists
+        if(!req.decoded.psychiatrist_id || isNaN(req.decoded.psychiatrist_id) || Number(req.decoded.psychiatrist_id) < 1) {
+            return res.status(409).send({
+                status: false,
+                message: "Psychiatrist id is invalid or signin expired."
+            });
+        }
         
         patient.findPatientByEmail(req.body.patient_email, (err, patient) => {
             if (err && err.message) {
@@ -37,8 +43,7 @@ const checkDuplicatePatientEmailAndPsychiatristId = (req, res, next) => {
                     });
                 } else {
                     try {
-                        console.log(req);
-                        psychiatrist.getById(req.body.patient_psychiatrist_id, (err, psychiatrist) => {
+                        psychiatrist.getById(req.decoded.psychiatrist_id, (err, psychiatrist) => {
                             if (err && err.message) {
                                 return res.status(500).send({
                                     status: false,

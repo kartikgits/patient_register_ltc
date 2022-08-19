@@ -21,6 +21,7 @@ signup = (req, res) => {
             patient_email: req.body.patient_email,
             patient_password: bcrypt.hashSync(req.body.patient_password, 8),
             patient_photo: getUrlFromImage(req.body.patient_photo),
+            patient_psychiatrist_id: req.decoded.psychiatrist_id
         }, (err, patient) => {
             if (err) {
                 res.status(500).send({
