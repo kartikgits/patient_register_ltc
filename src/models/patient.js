@@ -45,7 +45,6 @@ Patient.findPatientByEmail = (email, result) => {
         }
         
         if (res.length) {
-            console.log('Found patient: ', res[0]);
             result(null, res[0]);
             return;
         }
@@ -65,7 +64,6 @@ Patient.getAllByPsychiatristId = (psychiatrist_id, result) => {
         }
 
         if (res.length) {
-            console.log('Found patients: ', res);
             result(null, res);
             return;
         }

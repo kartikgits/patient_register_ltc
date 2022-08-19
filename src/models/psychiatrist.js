@@ -54,7 +54,6 @@ Psychiatrist.getByEmail = (psychiatrist_email, result) => {
         }
 
         if (res.length) {
-            console.log('Found psychiatrist: ', res[0]);
             result(null, res[0]);
             return;
         }
@@ -74,7 +73,6 @@ Psychiatrist.getAllByHospitalId = (hospital_id, result) => {
         }
 
         if (res.length) {
-            console.log('Found psychiatrists: ', res);
             result(null, res);
             return;
         }
@@ -84,29 +82,9 @@ Psychiatrist.getAllByHospitalId = (hospital_id, result) => {
     );
 }
 
-// Get psychiatrist count by hospital_id
-Psychiatrist.getPsychiatristsCountByHospitalId = (hospital_id, result) => {
-    databaseConnection.query('SELECT COUNT(*) AS count FROM psychiatrists WHERE psychiatrist_hospital_id = ?', hospital_id, (err, res) => {
-        if (err) {
-            console.log(err);
-            result(err, null);
-            return;
-        }
-
-        if (res.length) {
-            console.log('Found psychiatrist count: ', res[0]);
-            result(null, res[0]);
-            return;
-        }
-
-        result({ kind: 'not_found' }, null);
-    }
-    );
-}
-
 // Get all psychiatrists, and their patients details by hospital_id
 Psychiatrist.getAllWithPatientsByHospitalId = (hospital_id, result) => {
-    databaseConnection.query('SELECT * FROM psychiatrists psy inner join patients pt on psy.psychiatrist_id = pt.patient_psychiatrist_id WHERE psy.psychiatrist_hospital_id = ?', hospital_id, (err, res) => {
+    databaseConnection.query('SELECT * FROM psychiatrists psy left join patients pt on psy.psychiatrist_id = pt.patient_psychiatrist_id WHERE psy.psychiatrist_hospital_id = ?', hospital_id, (err, res) => {
         if (err) {
             console.log(err);
             result(err, null);
@@ -114,28 +92,46 @@ Psychiatrist.getAllWithPatientsByHospitalId = (hospital_id, result) => {
         }
 
         if (res.length) {
-            console.log('Found psychiatrists: ', res);
-            result(null, res);
-            return;
-        }
-
-        result({ kind: 'not_found' }, null);
-    }
-    );
-}
-
-// Get patient count of all psychiatrists by hospital_id
-Psychiatrist.getPatientsCountByHospitalId = (hospital_id, result) => {
-    databaseConnection.query('SELECT COUNT(*) AS count FROM patients WHERE patient_psychiatrist_id IN (SELECT psychiatrist_id FROM psychiatrists WHERE psychiatrist_hospital_id = ?)', hospital_id, (err, res) => {
-        if (err) {
-            console.log(err);
-            result(err, null);
-            return;
-        }
-
-        if (res.length) {
-            console.log('Found patient count: ', res[0]);
-            result(null, res[0]);
+            let psy_arr = [];
+            
+            for(let i = 0; i < res.length; i++) {
+                if(psy_arr[res[i].psychiatrist_id] != undefined) {
+                    psy_arr[res[i].psychiatrist_id].patient_details = psy_arr[res[i].psychiatrist_id].patient_details.concat({
+                        patient_id: res[i].patient_id,
+                        patient_name: res[i].patient_name,
+                        patient_address: res[i].patient_address,
+                        patient_phone: res[i].patient_phone,
+                        patient_email: res[i].patient_email,
+                        patient_photo: res[i].patient_photo
+                    });
+                    psy_arr[res[i].psychiatrist_id].total_patient_count++;
+                } else {
+                    psy_arr[res[i].psychiatrist_id] = {
+                        psychiatrist_id: res[i].psychiatrist_id,
+                        psychiatrist_name: res[i].psychiatrist_name,
+                        // If patient_id is null, then patient_details is an empty array
+                        patient_details: res[i].patient_id ? [{
+                            patient_id: res[i].patient_id,
+                            patient_name: res[i].patient_name,
+                            patient_address: res[i].patient_address,
+                            patient_phone: res[i].patient_phone,
+                            patient_email: res[i].patient_email,
+                            patient_photo: res[i].patient_photo
+                        }] : [],
+                        // If patient_id is null, then total_patient_count is 0
+                        total_patient_count: res[i].patient_id ? 1 : 0
+                    };
+                }
+            }
+    
+            // Clean up psy_arr to remove empty items
+            let len = psy_arr.length;
+            for(let i = 0; i < len; i++) {
+                psy_arr[i] && psy_arr.push(psy_arr[i]);
+            }
+            psy_arr.splice(0, len);
+    
+            result(null, psy_arr);
             return;
         }
 
