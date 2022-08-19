@@ -1,11 +1,19 @@
 const psychiatrist = require('../../models/psychiatrist');
-
+const { validationResult } = require('express-validator/check');
 let jwt = require('jsonwebtoken');
 let bcrypt = require('bcryptjs');
 let config = require('../../../config/auth.config');
 
 signup = (req, res) => {
     try {
+        const errors = validationResult(req); // Check for validation errors
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                status: false,
+                errors: errors.array()
+            });
+        }
+
         // Save psychiatrist to database
         psychiatrist.create({
             psychiatrist_name: req.body.psychiatrist_name,

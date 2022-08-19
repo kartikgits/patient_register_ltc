@@ -9,6 +9,41 @@ let Psychiatrist = function (psychiatrist) {
     this.psychiatrist_password = psychiatrist.psychiatrist_password;
 }
 
+// Create new psychiatrist
+Psychiatrist.create = (newPsychiatrist, result) => {
+    databaseConnection.query('INSERT INTO psychiatrists SET ?', newPsychiatrist, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+
+        result(null, {
+            status: true,
+            psychiatrist: {
+                psychiatrist_id: res.insertId,
+                psychiatrist_email: newPsychiatrist.psychiatrist_email,
+                psychiatrist_name: newPsychiatrist.psychiatrist_name,
+                psychiatrist_hospital_id: newPsychiatrist.psychiatrist_hospital_id
+            }
+        });
+    }
+    );
+}
+
+// Get psychiatrist by id
+Psychiatrist.getById = (psychiatrist_id, result) => {
+    databaseConnection.query('SELECT * FROM psychiatrists WHERE psychiatrist_id = ?', psychiatrist_id, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+        } else {
+            result(null, res);
+        }
+    }
+    );
+}
+
 // Get psychiatrist by email
 Psychiatrist.getByEmail = (psychiatrist_email, result) => {
     databaseConnection.query('SELECT * FROM psychiatrists WHERE psychiatrist_email = ?', psychiatrist_email, (err, res) => {

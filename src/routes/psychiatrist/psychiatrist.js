@@ -13,5 +13,5 @@ module.exports = (app) => {
     }
     );
     // app.post('/auth/patient-signup', [authJwt.verifyToken, verifySignUp.checkDuplicatePatientEmail], patientAuth.signup);
-    app.post('/auth/patient-signup', [verifySignUp.validatePatientSignUp('signup'), verifySignUp.checkDuplicatePatientEmail], patientAuth.signup);
+    app.post('/auth/patient-signup', [verifySignUp.validatePatientSignUp('signup'), verifySignUp.checkDuplicatePatientEmailAndPsychiatristId], patientAuth.signup);
 }

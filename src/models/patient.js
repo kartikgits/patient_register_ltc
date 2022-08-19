@@ -22,7 +22,15 @@ Patient.create = (newPatient, result) => {
         }
 
         console.log('Created patient: ', { id: res.insertId, ...newPatient });
-        result(null, { id: res.insertId, ...newPatient });
+        result(null, { 
+            patient_id: res.insertId,
+            patient_email: newPatient.patient_email,
+            patient_name: newPatient.patient_name,
+            patient_address: newPatient.patient_address,
+            patient_phone: newPatient.patient_phone,
+            patient_photo: newPatient.patient_photo,
+            patient_psychiatrist_id: newPatient.patient_psychiatrist_id
+         });
     }
     );
 }
