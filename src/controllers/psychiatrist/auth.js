@@ -41,6 +41,14 @@ signup = (req, res) => {
 
 signin = (req, res) => {
     try {
+        const errors = validationResult(req); // Check for validation errors
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                status: false,
+                errors: errors.array()
+            });
+        }
+
         psychiatrist.getByEmail(req.body.psychiatrist_email, (err, psychiatrist) => {
             if (err) {
                 res.status(500).send({
@@ -65,8 +73,14 @@ signin = (req, res) => {
                         }
                         );
                         res.send({
+                            status: true,
                             token: token,
-                            psychiatrist: psychiatrist
+                            psychiatrist: {
+                                psychiatrist_id: psychiatrist.psychiatrist_id,
+                                psychiatrist_email: psychiatrist.psychiatrist_email,
+                                psychiatrist_name: psychiatrist.psychiatrist_name,
+                                psychiatrist_hospital_id: psychiatrist.psychiatrist_hospital_id
+                            }
                         });
                     }
                 }

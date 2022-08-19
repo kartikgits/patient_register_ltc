@@ -205,10 +205,30 @@ const validatePsychiatristSignUp = (method) => {
     }
 }
 
+// Validate psychiatrist signin fields
+const validatePsychiatristSignIn = (method) => {
+    switch (method) {
+        case 'signin': {
+            return [
+                body('psychiatrist_email', 'Email is not provided or invalid').isEmail(),
+                body('psychiatrist_password', 'Password is required and should be of 8-16 characters').isLength({ min: 8, max: 16 }).custom((value, { req }) => {
+                    // Check if value contains at least one number and one uppercase and lowercase letter and optional special characters, otherwise, throw error
+                    const regex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
+                    if (!regex.test(value)) {
+                        throw new Error('Invalid password');
+                    } else {
+                        return true;
+                    }
+                })
+            ];
+        }
+    }
+}
 
 module.exports = {
     validatePatientSignUp: validatePatientSignUp,
     validatePsychiatristSignUp: validatePsychiatristSignUp,
     checkDuplicatePatientEmailAndPsychiatristId: checkDuplicatePatientEmailAndPsychiatristId,
-    checkDuplicatePsychiatristEmailAndHospitalId: checkDuplicatePsychiatristEmailAndHospitalId
+    checkDuplicatePsychiatristEmailAndHospitalId: checkDuplicatePsychiatristEmailAndHospitalId,
+    validatePsychiatristSignIn : validatePsychiatristSignIn
 }
