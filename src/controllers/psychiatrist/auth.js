@@ -80,8 +80,7 @@ signin = (req, res) => {
                         let token = jwt.sign({
                             psychiatrist_id: psychiatrist.psychiatrist_id
                         }, config.secret, {
-                            // expiresIn: config.expiresIn
-                            expiresIn: 3600
+                            expiresIn: config.expiresIn
                         }
                         );
                         res.status(201).send({
