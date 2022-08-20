@@ -167,7 +167,7 @@ const validatePatientSignUp = (method) => {
                     }
                     
                     // If value is provided, the check correct format with international phone number format
-                    if(value.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im)) {
+                    if(value.match(/^(\+91[\-\s]?)?(\91[\-\s]?)?[0]?(91)?[123456789]\d{9}$/im)) {
                         return value;
                     }
 

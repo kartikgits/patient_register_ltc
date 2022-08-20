@@ -17,7 +17,7 @@ signup = (req, res) => {
         patient.create({
             patient_name: req.body.patient_name,
             patient_address: req.body.patient_address,
-            patient_phone: req.body.patient_phone,
+            patient_phone: req.body.patient_phone || '',
             patient_email: req.body.patient_email,
             patient_password: bcrypt.hashSync(req.body.patient_password, 8),
             patient_photo: getUrlFromImage(req.body.patient_photo),
@@ -32,15 +32,7 @@ signup = (req, res) => {
                 res.status(201).send({
                     status: true,
                     message: 'Patient account has been created successfully!',
-                    patient: {
-                        patient_id: patient.patient_id,
-                        patient_name: patient.patient_name,
-                        patient_address: patient.patient_address,
-                        patient_phone: patient.patient_phone,
-                        patient_email: patient.patient_email,
-                        patient_photo: patient.patient_photo,
-                        patient_psychiatrist_id: patient.patient_psychiatrist_id
-                    }
+                    patient
                 });
             }
         }

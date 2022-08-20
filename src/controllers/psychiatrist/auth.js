@@ -30,12 +30,7 @@ signup = (req, res) => {
                 res.status(201).send({
                     status: true,
                     message: 'Psychiatrist account has been created successfully!',
-                    psychiatrist: {
-                        psychiatrist_id: psychiatrist.psychiatrist_id,
-                        psychiatrist_name: psychiatrist.psychiatrist_name,
-                        psychiatrist_email: psychiatrist.psychiatrist_email,
-                        psychiatrist_hospital_id: psychiatrist.psychiatrist_hospital_id
-                    }
+                    psychiatrist
                 });
             }
         }
@@ -59,7 +54,7 @@ signin = (req, res) => {
         }
 
         psychiatrist.getByEmail(req.body.psychiatrist_email, (err, psychiatrist) => {
-            if (err) {
+            if (err && err.message) {
                 res.status(500).send({
                     status: false,
                     message: "Some error occurred while retrieving psychiatrist details."
