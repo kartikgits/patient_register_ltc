@@ -24,10 +24,19 @@ signup = (req, res) => {
             if (err) {
                 res.status(500).send({
                     status: false,
-                    message: err.message || "Some error occurred while creating the psychiatrist."
+                    message: "Some error occurred while creating the psychiatrist."
                 });
             } else {
-                res.send(psychiatrist);
+                res.status(201).send({
+                    status: true,
+                    message: 'Psychiatrist account has been created successfully!',
+                    psychiatrist: {
+                        psychiatrist_id: psychiatrist.psychiatrist_id,
+                        psychiatrist_name: psychiatrist.psychiatrist_name,
+                        psychiatrist_email: psychiatrist.psychiatrist_email,
+                        psychiatrist_hospital_id: psychiatrist.psychiatrist_hospital_id
+                    }
+                });
             }
         }
         );
@@ -53,16 +62,18 @@ signin = (req, res) => {
             if (err) {
                 res.status(500).send({
                     status: false,
-                    message: err.message || "Some error occurred while retrieving psychiatrist details."
+                    message: "Some error occurred while retrieving psychiatrist details."
                 });
             } else {
                 if (!psychiatrist) {
                     res.status(401).send({
+                        status: false,
                         message: "Invalid psychiatrist email or password."
                     });
                 } else {
                     if (!bcrypt.compareSync(req.body.psychiatrist_password, psychiatrist.psychiatrist_password)) {
                         res.status(401).send({
+                            status: false,
                             message: "Invalid psychiatrist email or password."
                         });
                     } else {
@@ -73,7 +84,7 @@ signin = (req, res) => {
                             expiresIn: 3600
                         }
                         );
-                        res.send({
+                        res.status(201).send({
                             status: true,
                             token: token,
                             psychiatrist: {

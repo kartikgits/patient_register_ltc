@@ -26,10 +26,22 @@ signup = (req, res) => {
             if (err) {
                 res.status(500).send({
                     status: false,
-                    message: err.message || "Some error occurred while creating the patient."
+                    message: "Some error occurred while creating the patient."
                 });
             } else {
-                res.send(patient);
+                res.status(201).send({
+                    status: true,
+                    message: 'Patient account has been created successfully!',
+                    patient: {
+                        patient_id: patient.patient_id,
+                        patient_name: patient.patient_name,
+                        patient_address: patient.patient_address,
+                        patient_phone: patient.patient_phone,
+                        patient_email: patient.patient_email,
+                        patient_photo: patient.patient_photo,
+                        patient_psychiatrist_id: patient.patient_psychiatrist_id
+                    }
+                });
             }
         }
         );

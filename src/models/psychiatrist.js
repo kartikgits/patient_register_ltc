@@ -109,6 +109,8 @@ Psychiatrist.getAllWithPatientsByHospitalId = (hospital_id, result) => {
                     psy_arr[res[i].psychiatrist_id] = {
                         psychiatrist_id: res[i].psychiatrist_id,
                         psychiatrist_name: res[i].psychiatrist_name,
+                        // If patient_id is null, then total_patient_count is 0
+                        total_patient_count: res[i].patient_id ? 1 : 0,
                         // If patient_id is null, then patient_details is an empty array
                         patient_details: res[i].patient_id ? [{
                             patient_id: res[i].patient_id,
@@ -117,9 +119,7 @@ Psychiatrist.getAllWithPatientsByHospitalId = (hospital_id, result) => {
                             patient_phone: res[i].patient_phone,
                             patient_email: res[i].patient_email,
                             patient_photo: res[i].patient_photo
-                        }] : [],
-                        // If patient_id is null, then total_patient_count is 0
-                        total_patient_count: res[i].patient_id ? 1 : 0
+                        }] : []
                     };
                 }
             }

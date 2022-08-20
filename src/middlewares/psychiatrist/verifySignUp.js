@@ -8,7 +8,7 @@ const { body } = require('express-validator/check');
 const checkDuplicatePatientEmailAndPsychiatristId = (req, res, next) => {
     try {
         if(!req.body.patient_email) {
-            return res.status(409).send({
+            return res.status(422).send({
                 status: false,
                 message: "Patient email is required."
             });
@@ -16,14 +16,14 @@ const checkDuplicatePatientEmailAndPsychiatristId = (req, res, next) => {
 
         req.body.patient_email.match(
             /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ) ? '': res.status(409).send({
+        ) ? '': res.status(422).send({
             status: false,
             message: 'Email is not valid'
         });
 
         // Check if psychiatrist id exists
         if(!req.decoded.psychiatrist_id || isNaN(req.decoded.psychiatrist_id) || Number(req.decoded.psychiatrist_id) < 1) {
-            return res.status(409).send({
+            return res.status(422).send({
                 status: false,
                 message: "Psychiatrist id is invalid or signin expired."
             });
@@ -81,7 +81,7 @@ const checkDuplicatePatientEmailAndPsychiatristId = (req, res, next) => {
 const checkDuplicatePsychiatristEmailAndHospitalId = (req, res, next) => {
     try {
         if(!req.body.psychiatrist_email) {
-            return res.status(409).send({
+            return res.status(422).send({
                 status: false,
                 message: "Psychiatrist email is required."
             });
@@ -89,14 +89,14 @@ const checkDuplicatePsychiatristEmailAndHospitalId = (req, res, next) => {
 
         req.body.psychiatrist_email.match(
             /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ) ? '': res.status(409).send({
+        ) ? '': res.status(422).send({
             status: false,
             message: 'Email is not valid'
         });
 
         // Check if valid hospital id exists in request body
         if(!req.body.psychiatrist_hospital_id || isNaN(req.body.psychiatrist_hospital_id) || Number(req.body.psychiatrist_hospital_id) < 1) {
-            return res.status(409).send({
+            return res.status(422).send({
                 status: false,
                 message: "Valid Hospital id is required."
             });
