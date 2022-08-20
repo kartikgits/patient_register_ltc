@@ -20,8 +20,7 @@ Patient.create = (newPatient, result) => {
             result(err, null);
             return;
         }
-
-        console.log('Created patient: ', { id: res.insertId, ...newPatient });
+        
         result(null, { 
             patient_id: res.insertId,
             patient_email: newPatient.patient_email,

@@ -35,7 +35,7 @@ Psychiatrist.create = (newPsychiatrist, result) => {
 Psychiatrist.getById = (psychiatrist_id, result) => {
     databaseConnection.query('SELECT * FROM psychiatrists WHERE psychiatrist_id = ?', psychiatrist_id, (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.log(err);
             result(err, null);
         } else {
             result(null, res);

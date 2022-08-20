@@ -189,7 +189,6 @@ const validatePatientSignUp = (method) => {
 
 // Validate psychiatrist signup fields
 const validatePsychiatristSignUp = (method) => {
-    console.log(method);
     switch (method) {
         case 'signup': {
             return [

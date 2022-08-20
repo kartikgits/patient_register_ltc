@@ -16,7 +16,6 @@ Hospital.getById = (hospital_id, result) => {
         }
 
         if (res.length) {
-            console.log('Found hospital: ', res[0]);
             result(null, res[0]);
             return;
         }
