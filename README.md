@@ -1,5 +1,5 @@
 # patient_register_ltc
-Developed as an assignment
+
 ####  Frameworks/Libraries/Packages used
 - Express: Used for handling requests, responses, routing, port setting etc.
 - bcryptjs: Enables storing of passwords as hashed passwords instead of plaintext.
